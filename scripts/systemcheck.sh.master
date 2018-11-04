@@ -1,0 +1,65 @@
+#!/bin/bash
+# A script to run basic system checks and fix known performance issues
+# On a specific website project, adapted here as an example only
+# Christia Hall 2018, christia@thedotconcept.com
+
+# Set some environment-specific variables
+# Set mysql username
+MUSER=myuser
+
+# Set Drupal root, no trailing slashes
+DROOT=/var/www/html/example/docroot
+
+# End of edit regon, don't do anything after this
+cd $DROOT
+
+# Checking Cron
+echo Checking cron status...
+/etc/init.d/cron status
+
+# Checking mail systems
+echo Checking mail system...
+service postfix status
+echo Do you want to fix postfix? \(y\/n\)
+read FPF
+if [ "$FPF" = "y" ]; then
+	echo Restarting postfix...
+	service postfix restart
+fi
+
+service dovecot status
+echo Do you want to fix dovecot? \(y\/n\)
+read FDC
+if [ "$FDC" = "y" ]; then
+	echo Restarting dovecot...
+	service dovecot restart
+fi
+
+# Checking MySQL stuck processes
+echo Checking for stuck processes...
+mysql -u $MUSER -p << EOF
+show processlist;
+EOF
+
+# CRM Issues
+echo Checking and fixing CRM issues...
+echo Do you want to empty templates_c? \(y\/n\)
+read CTC
+if [ "$CTC" = "y" ]; then
+	rm -r $DROOT/sites/default/files/civicrm/templates_c/*
+	chown -R www-data $DROOT/sites/default/files/civicrm/templates_c
+	ls -l $DROOT/sites/default/files/civicrm/templates_c
+	drush cc civicrm
+fi
+		
+# Drupal Issues
+echo Clearing drupal caches...
+drush cc all
+echo Done!
+
+# CiviCRM Caches
+echo Clearing CiviCRM caches
+drush cc civicrm
+
+# DONE
+echo Done!

@@ -1,0 +1,10 @@
+#!/bin/bash
+# Script to run after creating a new script
+# In case there are more steps after besides this one
+
+# Define directory that the scripts are IN
+DROOT=/users/christiahall/Sites/example
+
+echo Updating permissions on new scripts...
+chmod -R 775 $DROOT/scripts
+echo Done!

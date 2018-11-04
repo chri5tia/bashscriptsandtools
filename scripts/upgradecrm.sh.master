@@ -1,0 +1,42 @@
+#!/bin/bash
+# CiviCRM upgrade script for FosterClub test and production sites
+# Generalized for an example
+# Christia Hall 2018, christia@thedotconcept.com
+
+# Set some environment-specific variables
+# Drupal root, no trailing slash
+DROOT=/var/www/html/example/docroot
+
+# Git branch to use
+BRANCH=master
+
+# Server group user for CiviCRM files
+GROUP=www-data
+
+# No more variables, don't edit after this
+echo \*\*\* Run pullrevert.sh before running this script
+echo Starting CiviCRM upgrade script...
+cd $DROOT
+drush pm-disable civicrm_member_roles -y
+drush pm-disable webform_civicrm -y
+chown -R $GROUP sites/default/files/civicrm/templates_c
+rm -r sites/default/files/civicrm/templates_c/*
+if [ $BRANCH = "master" ]
+then
+	rm -r sites/default/files/civicrm/templates_c/*
+	chown -R www-data sites/default/files/civicrm/templates_c
+	chgrp -R www-data sites/default/files/civicrm/templates_c
+fi
+if [ $BRANCH = "test" ]
+then
+	rm -r sites/default/files/civicrm/templates_c/*
+	chown -R www-data sites/default/files/civicrm/templates_c
+	chgrp -R www-data sites/default/files/civicrm/templates_c
+fi
+drush civicrm-upgrade-db
+drush en civicrm_member_roles -y
+drush en webform_civicrm -y
+drush en fosterclub_civicrm_settings -y
+drush en fosterclub_glazed_theme -y
+drush cc all
+echo Upgrade complete

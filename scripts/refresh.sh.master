@@ -1,0 +1,55 @@
+#!/bin/bash
+# Performs necessary refresh steps for FosterClub local dev and test sites
+# Used after importing fresh database from prod
+# Adapted from specific script for example
+# TODO: create variable for domain info
+# Note: this script was designed to address specific issues and is not
+# necessarilly useful for other websites
+# Christia Hall 2018, christia@thedotconcept.com
+
+# Set some environment-specific variables
+# Set full Drupal root path, no trailing slash
+DROOT=/var/www/html/example/docroot
+
+# Set if this is production or not; (y/n)
+PROD=y
+
+# Don't edit after this, no more variables
+echo \*\*\* Note: Import new databases from production prior to running this script \*\*\*
+echo Would you like to continue? \(y\/n\)
+read GO
+	if [ "$GO" = "y" ]; then
+		echo Changing directory to $DROOT...
+		cd $DROOT
+			if [ "$PROD" = "n" ]; then
+				echo Turning on watchdog...
+				drush en dblog -y		
+				echo Restricting external traffic...
+                		drush vset restrict_ip_enable 1
+				echo Enabling the stage_file_proxy module and setting variables...
+				drush en stage_file_proxy -y
+				drush variable-set stage_file_proxy_origin "https://www.fosterclub.com"
+				echo Fixing that HTTP 301 error...
+				drush variable-set stage_file_proxy_hotlink 1
+				drush variable-set stage_file_proxy_use_imagecache_root 1
+			fi
+		echo Would you like to revert all features? \(y\/n\)
+		read FRA
+			if [ "$FRA" = "y" ]; then
+				echo Reverting all features...
+				drush fra -y
+			else
+				echo \*\*\* Note: Run pullrevert.sh to pull in and revert latest features \*\*\*
+			fi
+		drush cc drush
+		drush updb
+		drush cc all
+		echo Successfully refreshed!
+		echo \*\*\* Note: go to admin/appearance/settings/glazed and resave the page to fix the theme problem \*\*\*
+		echo Printing a link to get logged in...
+		drush uli
+
+	else
+		echo Come back when you\'re ready.
+		exit
+	fi

@@ -1,0 +1,59 @@
+#!/bin/bash
+# Back up website, pull in latest code with option to upgrade CiviCRM
+# Adapted from a specific script
+# TODO: create variable for specific CiviCRM contribution pages
+# Christia Hall 2018 for FosterClub
+
+# One-time customizations:
+# Define some envrionment-specific variables
+# Which git branch to use
+BRANCH=master
+
+# Directory the Drupal root is IN, no trailing slash
+DROOT=/var/www/html/example
+
+# Don't edit after this, no more variables
+cd $DROOT/docroot
+echo Changing directory...
+pwd
+echo Checking out $BRANCH branch...
+git checkout $BRANCH
+drush cc all
+echo Putting site into read-only mode...
+drush vset site_readonly 1
+echo Turning off CiviCRM contribution forms...
+drush cvapi ContributionPage.create sequential=1 id=1 is_active=0
+drush cvapi ContributionPage.create sequential=1 id=9 is_active=0
+
+# Back up option
+echo Would you like to make a full back up? \(y\/n\)?
+read BU
+	if [ "$BU" = "y" ]; then
+		echo Making backups...
+		$DROOT/scripts/bu.sh
+	else
+		echo Skipping back up...
+	fi
+echo pulling in latest code from $BRANCH branch...
+git pull origin $BRANCH
+drush fl
+drush fra -y
+drush updb -y
+
+# CiviCRM upgrade option
+echo Does this update include a CiviCRM upgrade? \(y\/n\)
+read CRM
+	if [ "$CRM" = "y" ]; then
+		echo Starting CiviCRM upgrade
+		$DROOT/scripts/upgradecrm.sh
+	else
+		echo Skipping the CiviCRM
+	fi
+
+# Clear caches and remove from read-only mode
+echo Clearing caches and turn off read-only mode...
+drush cc all
+drush cvapi ContributionPage.create sequential=1 id=1 is_active=1
+drush cvapi ContributionPage.create sequential=1 id=9 is_active=1
+drush vset site_readonly 0
+echo Done

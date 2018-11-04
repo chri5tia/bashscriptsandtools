@@ -1,0 +1,79 @@
+/**************************************
+* MENU AND THROUGHOUT SITE            *
+**************************************/
+
+/* button format for forms */
+.webform-submit button-primary btn btn-lg btn-default form-submit: hover {
+border: none;
+}
+
+/* Hamburger menu color */
+.body--glazed-nav-mobile .glazed-header #glazed-menu-toggle span, .body--glazed-nav-mobile .glazed-header #glazed-menu-toggle span:before, .body--glazed-nav-mobile .glazed-header #glazed-menu-toggle span:after {
+background: #FFEA13;
+}
+
+/* style email join form on home page */
+.email.civicrm-enabled.form-control.form-text.form-email.required {
+background-color: white;
+}
+.webform-submit.button-primary.btn.btn-lg.btn-default.form-submit {
+margin-top: 25px;
+}
+
+/* style last menu item differently */
+#glazed-main-menu .nav > li.last { background: #666666; color:#ffffff; }
+
+/* mobile menu icons */
+.glyphicon {
+  color: #ffea13;
+}
+
+/* display tags in line */
+.field-blog-tags {
+  display:inline;
+/*  color: #333333; */
+}
+
+.center {
+  text-align: center;
+  text-decoration: none;
+}
+
+/* blocks to hide on mobile */
+@media screen and (max-width: 800px) {
+  .not_mobile  {
+    visibility: hidden;
+    clear: both;
+    display: none;
+  }
+}
+
+/* create account button spacing */
+div#edit-actions.form-actions.form-wrapper.form-group {
+  margin-top: 10px;
+}
+
+/**************************************
+* BLOGS & ARTICLES                    *
+**************************************/
+
+/* create hover-over for blogs */
+div.col-sm-8.views-fieldset:hover {
+  background-color:#f3f3f3;
+}
+
+div.hoverblock.views-fieldset:hover {
+  background-color:#f3f3f3;
+  clear:right;
+}
+div.blog-tag-label {
+  margin: 0 5px 5px 0;
+}
+
+/**************************************
+* LiveChat                            *
+**************************************/
+
+div#livechat-compact-container {
+  transform: translateY(-55%) !important;
+}

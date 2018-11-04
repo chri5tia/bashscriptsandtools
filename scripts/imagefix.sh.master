@@ -1,0 +1,34 @@
+#!/bin/bash
+# A script to transfer images from the old website to the new website
+# Note: this script assumes that the file path/architecture of the two servers are identical
+# This script was adapted from a script that was written as a solution to a temporary issue
+# It probably would not include so many variable sets since it's really simple but I wanted
+# Hide the credentials for the realtime issue
+# Christia Hall 2017, christia@thedotconcept.com
+
+# One-time customizations to script:
+# Define variables
+
+PORT=00000
+USER=example
+
+# Set IP address from old server
+IP=127.0.0.1
+
+# Set IP or domain for new server
+DOMAIN=example.com
+
+# Set file paths for images on new server, no trailing slash
+PATH=/var/www/html/example/docroot/sites/default/files
+
+# Do not edit below this line
+echo Enter the file name of the image \(or \"quit\"\):
+read IMAGE
+
+if [ "$IMAGE" = "quit" ]; then
+	exit
+else	
+	scp -$PORT $USER@$IP:$PATH/$IMAGE .
+	scp -$PORT $IMAGE $USER@$DOMAIN:$PATH/
+	rm $IMAGE
+fi

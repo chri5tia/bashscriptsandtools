@@ -1,0 +1,43 @@
+#!/bin/bash
+# A script menu for calling all the scripts
+# Christia April 2018
+
+# One time customizations
+# Set the root for the drupal scripts
+SCRIPTS=/var/www/html/example/scripts
+
+# Set the menu options and delete the options that aren't needed
+OPTIONS="
+pullrevert.sh 
+systemcheck.sh 
+bu.sh 
+newscript.sh 
+imagefix.sh 
+upgradecrm.sh 
+refresh.sh 
+quit"
+
+# End of edit zone, don't touch, unless you need to add a new script
+
+select opt in $OPTIONS; do
+	if [ "$opt" = "bu.sh" ]; then
+		$SCRIPTS/bu.sh
+	elif [ "$opt" = "newscript.sh" ]; then
+		$SCRIPTS/newscript.sh
+	elif [ "$opt" = "imagefix.sh" ]; then
+		$SCRIPTS/imagefix.sh
+	elif [ "$opt" = "upgradecrm.sh" ]; then
+		$SCRIPTS/upgradecrm.sh
+	elif [ "$opt" = "pullrevert.sh" ]; then
+		$SCRIPTS/pullrevert.sh
+	elif [ "$opt" = "refresh.sh" ]; then
+		$SCRIPTS/refresh.sh
+	elif [ "$opt" = "systemcheck.sh" ]; then
+		$SCRIPTS/systemcheck.sh
+	elif [ "$opt" = "quit" ]; then
+		echo Done
+		exit
+	else
+		echo bad option
+	fi
+done

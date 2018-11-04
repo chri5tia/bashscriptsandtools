@@ -1,0 +1,27 @@
+#!/bin/bash
+# Script to update and customize scripts
+# Christia Hall 2018
+
+# Define some environment-specific variables
+
+# Name of site for backups:
+# prod = production, www.fosterclub.com
+# test = test server, test.fosterclub.com
+# dev = local dev environment
+# devtest = local test environment
+
+SITE=prod
+
+# Set the directory that the Drupal root is IN, no trailing slashes
+DROOT=/var/www/html/fosterclub
+
+# Set the backup directory, no trailing slashes
+BUD=$DROOT/notes/backups
+
+# Don't edit below this line
+cd $DROOT
+tar -czf $BUD/$SITE-scripts-$(date +"%Y%m%d%H%M%S").tgz scripts
+rm -r .sh
+git pull origin master
+
+echo Done.

@@ -1,0 +1,35 @@
+#!/bin/bash
+# Script example adapted from a specific project
+# Script to back up example.com production, dev and test sites
+# For use with other scripts, make sure to set the variables
+# By Christia Hall 2018 for FosterClub
+
+# One-time customizations
+# Define some environment-specific variables
+
+# Name of site for backups:
+# prod = production, www.example.com
+# test = test server, test.example.com
+# dev = local dev environment
+# devtest = local test environment
+
+SITE=prod
+
+# Set database user
+DBUSER=example
+
+# Set the directory that the Drupal root is IN, no trailing slashes
+DROOT=/var/www/html/example
+
+# Set the directory for storing backups, no trailing slashes
+BUD=/$DROOT/notes/backups
+
+# Don't edit; End of defining variables
+echo Doing a full back up...
+echo Prepare to enter MySQL password...
+tar -czf $BUD/$SITE-files-$(date +'%Y%m%d%H%M%S').tgz  $DROOT/docroot
+mysqldump -u $DBUSER -p drupal > $BUD/$SITE-drupal-$(date +'%Y%m%d%H%M%S').sql
+mysqldump -u $DBUSER -p civicrm > $BUD/$SITE-civicrm-$(date +'%Y%m%d%H%M%S').sql
+ls -lh $BUD
+pwd
+echo Finished with backups...

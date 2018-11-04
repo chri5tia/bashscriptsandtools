@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the FosterClub Glazed Theme feature.
+ */
+
+include_once 'fosterclub_glazed_theme.features.inc';
